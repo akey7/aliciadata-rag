@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS papers (
+    id SERIAL PRIMARY KEY,
+    sha256 VARCHAR(70),
+    uuid4 VARCHAR(40),
+    title VARCHAR(500),
+    category VARCHAR(100),
+    datetime_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
