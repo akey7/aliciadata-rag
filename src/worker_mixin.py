@@ -2,9 +2,9 @@ import os
 from contextlib import contextmanager
 
 
-class WorkflowMixin:
+class WorkerMixin:
     """
-    WorkflowMixin provides common functionality for the workflows within
+    WorkerMixin provides common functionality for the workflows within
     knowledge-agent.
     """
 
@@ -65,82 +65,6 @@ class WorkflowMixin:
         if not results:
             raise LookupError(f"WorkflowMixin: No title found for UUID {my_uuid4}")
         return results[0][0]
-
-    def attribution(self, author_list, publication_year):
-        """
-        Creates an attribution in the form of:
-
-        author(s), publication_year
-
-        According to commonly used rules of authorship.
-
-        Parameters
-        ----------
-        author_list : Listp[str]
-            List of authors.
-
-        publication_year : int
-            The publication year.
-
-        Returns
-        -------
-        str
-            An attribution for the paper.
-        """
-        if len(author_list) == 1:
-            return f"{author_list[0]} {publication_year}"
-        elif len(author_list) == 2:
-            return f"{author_list[0]} and {author_list[1]} {publication_year}"
-        elif len(author_list) > 2:
-            return f"{author_list[0]} et al {publication_year}"
-        else:
-            return "Unattributable"
-
-    def map_uuid_to_metadata(self, paper_uuid4):
-        """
-        Map a paper UUID to its title and metdata. Return a dictionary with
-        this information.
-
-        Parameters
-        ----------
-        paper_uuid4 : str
-            The UUID of the paper being retrieved.
-
-        Returns
-        -------
-        Dict[str, Union[str, int, List[str]]]
-            Dictionary with the following keys: "title", the title of the paper;
-            "doi", the DOI of the paper; "author_list", List[str] of authors
-            on the paper; "publication_year", year of publication; "attribution",
-            attribution of the paper.
-
-        Raises
-        ------
-        LookupError
-            Raises a LookupError if the given uuid is not found.
-        """
-        with self.get_connection() as conn:
-            with conn.cursor() as cur:
-                cur.execute(
-                    "SELECT title, doi, author_list, publication_year, category FROM papers WHERE uuid4 = %s",
-                    (paper_uuid4,),
-                )
-                results = cur.fetchall()
-        if not results:
-            raise LookupError(f"WorkflowMixin: No title found for UUID {paper_uuid4}")
-        first_result = results[0]
-        author_list = first_result[2].split(", ") if first_result[2] else "No authors"
-        publication_year = int(first_result[3]) if first_result[3] else -1
-        category = first_result[4]
-        title_and_metadata = {
-            "title": first_result[0],
-            "doi": first_result[1],
-            "author_list": author_list,
-            "publication_year": publication_year,
-            "category": category,
-            "attribution": self.attribution(author_list, publication_year),
-        }
-        return title_and_metadata
 
     def read_file(self, filename):
         """
