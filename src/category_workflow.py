@@ -106,7 +106,6 @@ class CategoryWorkflow(AgentMixin, WorkerMixin):
         for my_uuid4, title in unsummarized_uuids_and_titles:
             category = self.categorize_title(title)
             self.update_category_for_uuid(my_uuid4, category)
-        if len(unsummarized_uuids_and_titles) > 0:
-            self.notifier.send_notification(
-                f"CategoryAgent: Anthropic categorized {len(unsummarized_uuids_and_titles)} papers."
-            )
+        n_categorized = len(unsummarized_uuids_and_titles)
+        if n_categorized > 0:
+            logging.info(f"CategoryWorkflow: Anthropic categorized {n_categorized} papers")
