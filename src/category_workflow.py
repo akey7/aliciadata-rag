@@ -63,7 +63,6 @@ class CategoryWorkflow(AgentMixin, WorkerMixin):
             system_content=system_content,
             user_content=user_content,
             pause_between_prompts=self.pause_between_prompts,
-            notifier=self.notifier,
         )
         category = (
             response

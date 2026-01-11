@@ -144,7 +144,7 @@ class AgentMixin:
         user_content,
         notifier=None,
         pause_between_prompts=60,
-        model="claude-3-5-haiku-20241022",
+        model="claude-haiku-4-5",
     ):
         """
         Call the Anthropic API.

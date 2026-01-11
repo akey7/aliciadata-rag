@@ -4,6 +4,7 @@ import psycopg2
 from psycopg2 import pool
 from dotenv import load_dotenv
 from src.import_worker import ImportWorker
+from src.category_workflow import CategoryWorkflow
 
 logging.basicConfig(level=logging.INFO)
 load_dotenv()
@@ -16,6 +17,8 @@ pool = psycopg2.pool.SimpleConnectionPool(
     port="5432",
     database=os.getenv("DB_NAME"),
 )
-import_worker = ImportWorker(pool)
-import_worker.run()
+iw = ImportWorker(pool)
+iw.run()
+cw = CategoryWorkflow(pool=pool, pause_between_prompts=10)
+cw.run()
 logging.info("ingest.py: Done!")
