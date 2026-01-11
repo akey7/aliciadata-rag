@@ -162,17 +162,6 @@ class RagEmbeddingsWorkflow(WorkerMixin, PathMixin):
                 )
             conn.commit()
 
-    def run(self):
-        """
-        Calls appropriate functions to fid unembedded papers and add them
-        to the vector store.
-        """
-        unembedded_uuid4s = self.find_unembedded_papers()
-        logging.info(f"Found {len(unembedded_uuid4s)} unembedded papers.")
-        if len(unembedded_uuid4s) > 0:
-            for my_uuid4 in unembedded_uuid4s:
-                self.insert_chunks_from_paper(my_uuid4, self.sentence_transformer)
-
     def erase_embeddings(self):
         """
         Erases all the vector embeddings. Useful if all the embeddings need to
@@ -302,3 +291,14 @@ class RagEmbeddingsWorkflow(WorkerMixin, PathMixin):
                     result = cur.fetchone()
                     paper_categories.append(result[0])
         return embeddings, metadatas, paper_categories
+    
+    def run(self):
+        """
+        Calls appropriate functions to fid unembedded papers and add them
+        to the vector store.
+        """
+        unembedded_uuid4s = self.find_unembedded_papers()
+        logging.info(f"Found {len(unembedded_uuid4s)} unembedded papers.")
+        if len(unembedded_uuid4s) > 0:
+            for my_uuid4 in unembedded_uuid4s:
+                self.insert_chunks_from_paper(my_uuid4, self.sentence_transformer)
