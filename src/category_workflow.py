@@ -4,7 +4,7 @@ from .worker_mixin import WorkerMixin
 
 
 class CategoryWorkflow(AgentMixin, WorkerMixin):
-    def __init__(self, notifier, pool, pause_between_prompts=20):
+    def __init__(self, pool, pause_between_prompts=20):
         """
         Instantiate the CategoryWorkflow
 
@@ -20,7 +20,6 @@ class CategoryWorkflow(AgentMixin, WorkerMixin):
             Number of seconds to pause between successive prompts to remain
             under API rate limits.
         """
-        self.notifier = notifier
         self.pool = pool
         self.pause_between_prompts = pause_between_prompts
 
