@@ -118,5 +118,5 @@ class ImportWorker(WorkerMixin, PathMixin):
                         logging.info(f"ImportWorker: Added title {title}")
                         count += 1
         if count > 0:
-            self.export_papers_table()
+            # self.export_papers_table()
             logging.info(f"ImportWorker: Imported {count} papers")
