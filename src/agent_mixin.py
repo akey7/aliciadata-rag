@@ -62,11 +62,10 @@ class AgentMixin:
                 contents = f.read()
         return contents
 
-    def call_openai(
+    def call_openai_with_messages(
         self,
-        system_content,
-        user_content,
-        notifier,
+        messages,
+        notifier=None,
         model="gpt-5-mini",
         pause_between_prompts=60,
         max_retries=5,
@@ -111,10 +110,8 @@ class AgentMixin:
                 client = OpenAI()
                 completion = client.chat.completions.create(
                     model=model,
-                    messages=[
-                        {"role": "system", "content": system_content},
-                        {"role": "user", "content": user_content},
-                    ],
+                    messages=messages,
+                    reasoning_effort="minimal",
                 )
                 logging.info(f"AgentMixin: Sleeping {pause_between_prompts} seconds...")
                 time.sleep(pause_between_prompts)
@@ -129,13 +126,15 @@ class AgentMixin:
             except Exception as e:
                 error_message = f"AgentMixin: OpenAI call error: {e}"
                 logging.error(error_message)
-                notifier.send_notification(error_message)
+                if notifier:
+                    notifier.send_notification(error_message)
                 break
         error_message = (
             f"AgentMixin: Failed to complete the request after {max_retries} attempts."
         )
         logging.error(error_message)
-        notifier.send_notification(error_message)
+        if notifier:
+            notifier.send_notification(error_message)
         return model, None
 
     def call_anthropic(

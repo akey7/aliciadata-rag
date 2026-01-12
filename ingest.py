@@ -39,5 +39,6 @@ rew = RagEmbeddingsWorkflow(
     sentence_transformer=shared_sentence_transformer,
     hf_embeddings=shared_hf_embeddings,
 )
+rew.erase_embeddings()
 rew.run()
 logging.info("ingest.py: Done!")
