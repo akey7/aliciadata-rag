@@ -103,39 +103,39 @@ class AgentMixin:
         Tuple[str, str]
             The model and the response strings, in that order.
         """
-        print(messages)
-        return model, ""
-        # retries = 0
-        # while retries < max_retries:
-        #     try:
-        #         logging.info(f"AgentMixin: call_openai() {model}")
-        #         client = OpenAI()
-        #         completion = client.chat.completions.create(
-        #             model=model,
-        #             messages=messages,
-        #         )
-        #         logging.info(f"AgentMixin: Sleeping {pause_between_prompts} seconds...")
-        #         time.sleep(pause_between_prompts)
-        #         return model, completion.choices[0].message.content
-        #     except (APIError, APIConnectionError) as e:
-        #         retries += 1
-        #         delay = base_delay * (2**retries)
-        #         logging.error(
-        #             f"AgentMixin: Retrying OpenAI in {delay} seconds due to error: {e}. Attempt {retries} of {max_retries}"
-        #         )
-        #         time.sleep(delay)
-        #     except Exception as e:
-        #         error_message = f"AgentMixin: OpenAI call error: {e}"
-        #         logging.error(error_message)
-        #         notifier.send_notification(error_message)
-        #         break
-        # error_message = (
-        #     f"AgentMixin: Failed to complete the request after {max_retries} attempts."
-        # )
-        # logging.error(error_message)
-        # if notifier:
-        #     notifier.send_notification(error_message)
-        # return model, None
+        retries = 0
+        while retries < max_retries:
+            try:
+                logging.info(f"AgentMixin: call_openai() {model}")
+                client = OpenAI()
+                completion = client.chat.completions.create(
+                    model=model,
+                    messages=messages,
+                    reasoning_effort="minimal",
+                )
+                logging.info(f"AgentMixin: Sleeping {pause_between_prompts} seconds...")
+                time.sleep(pause_between_prompts)
+                return model, completion.choices[0].message.content
+            except (APIError, APIConnectionError) as e:
+                retries += 1
+                delay = base_delay * (2**retries)
+                logging.error(
+                    f"AgentMixin: Retrying OpenAI in {delay} seconds due to error: {e}. Attempt {retries} of {max_retries}"
+                )
+                time.sleep(delay)
+            except Exception as e:
+                error_message = f"AgentMixin: OpenAI call error: {e}"
+                logging.error(error_message)
+                if notifier:
+                    notifier.send_notification(error_message)
+                break
+        error_message = (
+            f"AgentMixin: Failed to complete the request after {max_retries} attempts."
+        )
+        logging.error(error_message)
+        if notifier:
+            notifier.send_notification(error_message)
+        return model, None
 
     def call_anthropic(
         self,
