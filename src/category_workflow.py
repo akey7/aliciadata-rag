@@ -106,4 +106,6 @@ class CategoryWorkflow(AgentMixin, WorkerMixin):
             self.update_category_for_uuid(my_uuid4, category)
         n_categorized = len(unsummarized_uuids_and_titles)
         if n_categorized > 0:
-            logging.info(f"CategoryWorkflow: Anthropic categorized {n_categorized} papers")
+            logging.info(
+                f"CategoryWorkflow: Anthropic categorized {n_categorized} papers"
+            )

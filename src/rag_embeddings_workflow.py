@@ -291,7 +291,7 @@ class RagEmbeddingsWorkflow(WorkerMixin, PathMixin):
                     result = cur.fetchone()
                     paper_categories.append(result[0])
         return embeddings, metadatas, paper_categories
-    
+
     def run(self):
         """
         Calls appropriate functions to fid unembedded papers and add them
