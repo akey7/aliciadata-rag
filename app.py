@@ -11,9 +11,10 @@ from sentence_transformers import SentenceTransformer
 from langchain_huggingface import HuggingFaceEmbeddings
 from src.rag_embeddings_workflow import RagEmbeddingsWorkflow
 from src.agent_mixin import AgentMixin
+from src.worker_mixin import WorkerMixin
 
 
-class RagChat(AgentMixin):
+class RagChat(AgentMixin, WorkerMixin):
     def __init__(self):
         load_dotenv()
         self.pool = psycopg2.pool.SimpleConnectionPool(
@@ -89,6 +90,13 @@ class RagChat(AgentMixin):
         _, reply = self.call_openai_with_messages(messages, model=self.model)
         return {"role": "assistant", "content": reply}
 
+    def log_message(self, message):
+        with self.get_connection() as conn:
+            with conn.cursor() as cur:
+                sql = "INSERT INTO rag_prompts (prompt) VALUES (%s)"
+                cur.execute(sql, (message,))
+            conn.commit()
+
     def gradio_app(self):
         with gr.Blocks(title="AliciaData RAG") as demo:
             gr.Markdown("# AliciaData RAG")
@@ -134,6 +142,7 @@ class RagChat(AgentMixin):
 
             def respond(message, chat_history):
                 if len(chat_history) < 1:
+                    self.log_message(message)
                     chat_history.extend(self.retrieve_context_for_chat(message))
                 chat_history.append({"role": "user", "content": message})
                 chat_history.append(self.prepare_and_send_history(chat_history))
