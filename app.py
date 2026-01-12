@@ -35,9 +35,8 @@ class RagChat(AgentMixin):
             hf_embeddings=hf_embeddings,
         )
         logging.basicConfig(level=logging.INFO)
-        self.citations = []
         self.model = "gpt-5-mini"
-        self.chat_history = []
+        self.citations = []
 
     def generate_status(self):
         """
@@ -83,8 +82,14 @@ class RagChat(AgentMixin):
         self.citations = list(set(piece["source"] for piece in context))
         return context_messages
 
-    # def call_openai_with_history(self, history):
-    #     return {"role": "assistant", "content": "hello"} 
+    def prepare_and_send_history(self, history):
+        system_content = self.prepare_prompt_from_file("openai_rag_system_prompt")
+        messages = [
+            {"role": "system", "content": system_content}
+        ]
+        messages.extend(history)
+        _, reply = self.call_openai_with_messages(messages, model=self.model)
+        return {"role": "assistant", "content": reply}
 
     def gradio_app(self):
         with gr.Blocks(title="AliciaData RAG") as demo:
@@ -107,8 +112,8 @@ class RagChat(AgentMixin):
             def respond(message, chat_history):
                 if len(chat_history) < 1:
                     chat_history.extend(self.retrieve_context_for_chat(message))
-                # chat_history.append({"role": "user", "content": message})
-                # chat_history.append(self.call_openai_with_history(chat_history))
+                chat_history.append({"role": "user", "content": message})
+                chat_history.append(self.prepare_and_send_history(chat_history))
                 new_status_message = self.generate_status()
                 return "", chat_history, new_status_message
             
