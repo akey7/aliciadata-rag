@@ -128,7 +128,9 @@ class RagChat(AgentMixin):
                 return gr.Button("Clear", variant="stop", interactive=True)
 
             def clear_chat():
-                return []
+                self.citations = []
+                fresh_status = self.generate_status()
+                return [], fresh_status
 
             def respond(message, chat_history):
                 if len(chat_history) < 1:
@@ -142,7 +144,7 @@ class RagChat(AgentMixin):
                 respond, [msg, chatbot], [msg, chatbot, status_message]
             ).then(enable_clear_button, outputs=[clear_button])
 
-            clear_button.click(clear_chat, outputs=[chatbot])
+            clear_button.click(clear_chat, outputs=[chatbot, status_message])
 
         return demo
 
