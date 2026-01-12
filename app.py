@@ -109,6 +109,12 @@ class RagChat(AgentMixin):
                 with gr.TabItem("Embeddings"):
                     gr.Markdown("Coming soon!")
 
+            def disable_clear_button():
+                return gr.Button("Clear", variant="stop", interactive=False)
+
+            def enable_clear_button():
+                return gr.Button("Clear", variant="stop", interactive=True)
+
             def respond(message, chat_history):
                 if len(chat_history) < 1:
                     chat_history.extend(self.retrieve_context_for_chat(message))
@@ -116,8 +122,14 @@ class RagChat(AgentMixin):
                 chat_history.append(self.prepare_and_send_history(chat_history))
                 new_status_message = self.generate_status()
                 return "", chat_history, new_status_message
-            
-            msg.submit(respond, [msg, chatbot], [msg, chatbot, status_message])
+
+            msg.submit(
+                disable_clear_button, outputs=[clear_button]
+            ).then(
+                respond, [msg, chatbot], [msg, chatbot, status_message]
+            ).then(
+                enable_clear_button, outputs=[clear_button]
+            )
 
         return demo
 
