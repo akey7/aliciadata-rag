@@ -11,9 +11,10 @@ from sentence_transformers import SentenceTransformer
 from langchain_huggingface import HuggingFaceEmbeddings
 from src.rag_embeddings_workflow import RagEmbeddingsWorkflow
 from src.agent_mixin import AgentMixin
+from src.worker_mixin import WorkerMixin
 
 
-class RagChat(AgentMixin):
+class RagChat(AgentMixin, WorkerMixin):
     def __init__(self):
         load_dotenv()
         self.pool = psycopg2.pool.SimpleConnectionPool(
@@ -84,12 +85,17 @@ class RagChat(AgentMixin):
 
     def prepare_and_send_history(self, history):
         system_content = self.prepare_prompt_from_file("openai_rag_system_prompt")
-        messages = [
-            {"role": "system", "content": system_content}
-        ]
+        messages = [{"role": "system", "content": system_content}]
         messages.extend(history)
         _, reply = self.call_openai_with_messages(messages, model=self.model)
         return {"role": "assistant", "content": reply}
+
+    def log_message(self, message):
+        with self.get_connection() as conn:
+            with conn.cursor() as cur:
+                sql = "INSERT INTO rag_prompts (prompt) VALUES (%s)"
+                cur.execute(sql, (message,))
+            conn.commit()
 
     def gradio_app(self):
         with gr.Blocks(title="AliciaData RAG") as demo:
@@ -106,18 +112,48 @@ class RagChat(AgentMixin):
                             msg = gr.Textbox(label="Prompt (press enter to send)")
                         with gr.Column():
                             clear_button = gr.Button("Clear", variant="stop")
+                    with gr.Row():
+                        gr.Markdown("### Suggested prompts")
+                    with gr.Row():
+                        gr.Markdown(
+                            "`What are challenges in metabolomics, as opposed to proteomics and genomics?`"
+                        )
+                    with gr.Row():
+                        gr.Markdown(
+                            "`What are problems encountered when matching lipidomics data to genome scale metabolic models in systems biology?`"
+                        )
+                    with gr.Row():
+                        gr.Markdown(
+                            "`What methods are available to integrate relatively quantified metabolite abundances with a genome scale metabolic model?`"
+                        )
                 with gr.TabItem("Embeddings"):
                     gr.Markdown("Coming soon!")
 
+            def disable_clear_button():
+                return gr.Button("Clear", variant="stop", interactive=False)
+
+            def enable_clear_button():
+                return gr.Button("Clear", variant="stop", interactive=True)
+
+            def clear_chat():
+                self.citations = []
+                fresh_status = self.generate_status()
+                return [], fresh_status
+
             def respond(message, chat_history):
                 if len(chat_history) < 1:
+                    self.log_message(message)
                     chat_history.extend(self.retrieve_context_for_chat(message))
                 chat_history.append({"role": "user", "content": message})
                 chat_history.append(self.prepare_and_send_history(chat_history))
                 new_status_message = self.generate_status()
                 return "", chat_history, new_status_message
-            
-            msg.submit(respond, [msg, chatbot], [msg, chatbot, status_message])
+
+            msg.submit(disable_clear_button, outputs=[clear_button]).then(
+                respond, [msg, chatbot], [msg, chatbot, status_message]
+            ).then(enable_clear_button, outputs=[clear_button])
+
+            clear_button.click(clear_chat, outputs=[chatbot, status_message])
 
         return demo
 
