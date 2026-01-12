@@ -29,7 +29,7 @@ class RagChat(AgentMixin):
             "sentence-transformers/allenai-specter"
         )
         hf_embeddings = HuggingFaceEmbeddings(model_name="allenai-specter")
-        self.rew = RagEmbeddingsWorkflow(
+        self.embeddings_agent = RagEmbeddingsWorkflow(
             pool=self.pool,
             sentence_transformer=sentence_transformer,
             hf_embeddings=hf_embeddings,
@@ -37,6 +37,7 @@ class RagChat(AgentMixin):
         logging.basicConfig(level=logging.INFO)
         self.citations = []
         self.model = "gpt-5-mini"
+        self.chat_history = []
 
     def generate_status(self):
         """
@@ -60,6 +61,31 @@ class RagChat(AgentMixin):
 # Citations{os.linesep}{os.linesep}1. {citations_list}.
 """.strip()
 
+    def retrieve_context_for_chat(self, text):
+        """
+        Retrieve chunks of context to send to LLM using the EmbeddingsAgent.
+
+        Parameters
+        ----------
+        text : str
+            Text to base the similarity search on.
+
+        Returns
+        -------
+        List[Dict[str, str]]
+            List of "agent" messages to send to LLM as context for the chat.
+        """
+        context = self.embeddings_agent.similiarity_search(text, k=15)
+        context_messages = [
+            {"role": "assistant", "content": f'Context {idx+1}: {piece["chunk"]}'}
+            for idx, piece in enumerate(context)
+        ]
+        self.citations = list(set(piece["source"] for piece in context))
+        return context_messages
+
+    # def call_openai_with_history(self, history):
+    #     return {"role": "assistant", "content": "hello"} 
+
     def gradio_app(self):
         with gr.Blocks(title="AliciaData RAG") as demo:
             gr.Markdown("# AliciaData RAG")
@@ -74,9 +100,19 @@ class RagChat(AgentMixin):
                         with gr.Column():
                             msg = gr.Textbox(label="Prompt (press enter to send)")
                         with gr.Column():
-                            clar_button = gr.Button("Clear", variant="stop")
+                            clear_button = gr.Button("Clear", variant="stop")
                 with gr.TabItem("Embeddings"):
                     gr.Markdown("Coming soon!")
+
+            def respond(message, chat_history):
+                if len(chat_history) < 1:
+                    chat_history.extend(self.retrieve_context_for_chat(message))
+                # chat_history.append({"role": "user", "content": message})
+                # chat_history.append(self.call_openai_with_history(chat_history))
+                new_status_message = self.generate_status()
+                return "", chat_history, new_status_message
+            
+            msg.submit(respond, [msg, chatbot], [msg, chatbot, status_message])
 
         return demo
 
