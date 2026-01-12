@@ -84,9 +84,7 @@ class RagChat(AgentMixin):
 
     def prepare_and_send_history(self, history):
         system_content = self.prepare_prompt_from_file("openai_rag_system_prompt")
-        messages = [
-            {"role": "system", "content": system_content}
-        ]
+        messages = [{"role": "system", "content": system_content}]
         messages.extend(history)
         _, reply = self.call_openai_with_messages(messages, model=self.model)
         return {"role": "assistant", "content": reply}
@@ -106,6 +104,20 @@ class RagChat(AgentMixin):
                             msg = gr.Textbox(label="Prompt (press enter to send)")
                         with gr.Column():
                             clear_button = gr.Button("Clear", variant="stop")
+                    with gr.Row():
+                        gr.Markdown("### Suggested prompts")
+                    with gr.Row():
+                        gr.Markdown(
+                            "`What are challenges in metabolomics, as opposed to proteomics and genomics?`"
+                        )
+                    with gr.Row():
+                        gr.Markdown(
+                            "`What are problems encountered when matching lipidomics data to genome scale metabolic models in systems biology?`"
+                        )
+                    with gr.Row():
+                        gr.Markdown(
+                            "`What methods are available to integrate relatively quantified metabolite abundances with a genome scale metabolic model?`"
+                        )
                 with gr.TabItem("Embeddings"):
                     gr.Markdown("Coming soon!")
 
@@ -115,6 +127,9 @@ class RagChat(AgentMixin):
             def enable_clear_button():
                 return gr.Button("Clear", variant="stop", interactive=True)
 
+            def clear_chat():
+                return []
+
             def respond(message, chat_history):
                 if len(chat_history) < 1:
                     chat_history.extend(self.retrieve_context_for_chat(message))
@@ -123,13 +138,11 @@ class RagChat(AgentMixin):
                 new_status_message = self.generate_status()
                 return "", chat_history, new_status_message
 
-            msg.submit(
-                disable_clear_button, outputs=[clear_button]
-            ).then(
+            msg.submit(disable_clear_button, outputs=[clear_button]).then(
                 respond, [msg, chatbot], [msg, chatbot, status_message]
-            ).then(
-                enable_clear_button, outputs=[clear_button]
-            )
+            ).then(enable_clear_button, outputs=[clear_button])
+
+            clear_button.click(clear_chat, outputs=[chatbot])
 
         return demo
 
