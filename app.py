@@ -138,25 +138,26 @@ class RagChat(AgentMixin, WorkerMixin):
         """
         df = self.embeddings_plot_data()
         category_map = {
-            "[Structural Biology & Protein Chemistry]": "black",
-            "[Metabolic Pathways & Regulation]": "blue",
-            "[Enzyme Mechanisms & Kinetics]": "red",
-            "[Cell Signaling & Molecular Biology]": "orange",
-            "[Disease Mechanisms & Therapeutic Targets]": "gray",
-            "[Analytical Methods & Techniques]": "plum",
-            "[Systems Biology & Computational Methods]": "tomato",
-            "[Molecular Evolution & Comparative Biochemistry]": "turquoise",
-            "[Bioenergetics & Membrane Biochemistry]": "limegreen",
-            "[Chemical Biology & Synthetic Biology]": "magenta",
+            "1. Structural Biology & Protein Chemistry": "black",
+            "10. Chemical Biology & Synthetic Biology": "blue",
+            "11. Other/Interdisciplinary": "red",
+            "2. Metabolic Pathways & Regulation": "orange",
+            "3. Enzyme Mechanisms & Kinetics": "gray",
+            "4. Cell Signaling & Molecular Biology": "plum",
+            "5. Disease Mechanisms & Therapeutic Targets": "tomato",
+            "6. Analytical Methods & Techniques": "turquoise",
+            "7. Systems Biology & Computational Methods": "limegreen",
+            "8. Molecular Evolution & Comparative Biochemistry": "magenta",
+            "9. Bioenergetics & Membrane Biochemistry": "firebrick"
         }
-        colors = [category_map.get(cat, "firebrick") for cat in df["category"]]
+        colors = [category_map.get(cat, "red") for cat in df["category"]]
         fig = go.Figure()
         fig.add_trace(
             go.Scatter(
                 x=df["x"],
                 y=df["y"],
                 mode="markers",
-                marker=dict(size=10, color=colors),
+                marker=dict(size=10, color=colors, opacity=0.5),
                 text=df["tooltip"],
                 hoverinfo="text+x+y",
                 showlegend=False,
