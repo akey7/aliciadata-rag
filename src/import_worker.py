@@ -13,7 +13,7 @@ class ImportWorker(WorkerMixin, PathMixin):
         """
         Instantiate a new ImportWorker.
         """
-        self.pool = pool
+        self.db_pool = pool
         logging.info(
             f"ImportWorker: paper source {self.paper_source_folder}, paper storage {self.paper_storage_folder}"
         )

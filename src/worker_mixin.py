@@ -19,11 +19,12 @@ class WorkerMixin:
         connection
             Yields connection from the pool.
         """
-        connection = self.pool.getconn()
+        print(type(self.db_pool))
+        connection = self.db_pool.getconn()
         try:
             yield connection
         finally:
-            self.pool.putconn(connection)
+            self.db_pool.putconn(connection)
 
     @property
     def db_connection_info(self):

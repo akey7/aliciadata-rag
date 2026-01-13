@@ -20,7 +20,7 @@ class CategoryWorkflow(AgentMixin, WorkerMixin):
             Number of seconds to pause between successive prompts to remain
             under API rate limits.
         """
-        self.pool = pool
+        self.db_pool = pool
         self.pause_between_prompts = pause_between_prompts
 
     def select_uncategorized_uuids_and_titles(self):

@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import psycopg2
 from psycopg2 import pool
 import gradio as gr
+import pandas as pd
 import plotly.graph_objects as go
 from sklearn.manifold import TSNE
 from huggingface_hub import login
@@ -19,7 +20,7 @@ from src.worker_mixin import WorkerMixin
 class RagChat(AgentMixin, WorkerMixin):
     def __init__(self):
         load_dotenv()
-        self.pool = psycopg2.pool.SimpleConnectionPool(
+        self.db_pool = psycopg2.pool.SimpleConnectionPool(
             minconn=1,
             maxconn=10,
             user=os.getenv("DB_USER"),
@@ -33,7 +34,7 @@ class RagChat(AgentMixin, WorkerMixin):
         )
         hf_embeddings = HuggingFaceEmbeddings(model_name="allenai-specter")
         self.embeddings_agent = RagEmbeddingsWorkflow(
-            pool=self.pool,
+            db_pool=self.db_pool,
             sentence_transformer=sentence_transformer,
             hf_embeddings=hf_embeddings,
         )
@@ -108,9 +109,9 @@ class RagChat(AgentMixin, WorkerMixin):
         pd.DataFrame
             DataFrame suitable for plotting.
         """
-        embeddings_agent = RagEmbeddingsWorkflow(pool)
+        # embeddings_agent = RagEmbeddingsWorkflow(pool)
         embeddings, metadatas, paper_categories = (
-            embeddings_agent.query_embeddings_and_metadatas()
+            self.embeddings_agent.query_embeddings_and_metadatas()
         )
         tsne = TSNE(n_components=2, random_state=42)
         tsne_results = tsne.fit_transform(embeddings)
@@ -137,16 +138,16 @@ class RagChat(AgentMixin, WorkerMixin):
         """
         df = self.embeddings_plot_data()
         category_map = {
-            "[1. Structural Biology & Protein Chemistry]": "black",
-            "[2. Metabolic Pathways & Regulation]": "blue",
-            "[3. Enzyme Mechanisms & Kinetics]": "red",
-            "[4. Cell Signaling & Molecular Biology]": "orange",
-            "[5. Disease Mechanisms & Therapeutic Targets]": "gray",
-            "[6. Analytical Methods & Techniques]": "plum",
-            "[7. Systems Biology & Computational Methods]": "tomato",
-            "[8. Molecular Evolution & Comparative Biochemistry]": "turquoise",
-            "[9. Bioenergetics & Membrane Biochemistry]": "limegreen",
-            "[10. Chemical Biology & Synthetic Biology]": "magenta",
+            "[Structural Biology & Protein Chemistry]": "black",
+            "[Metabolic Pathways & Regulation]": "blue",
+            "[Enzyme Mechanisms & Kinetics]": "red",
+            "[Cell Signaling & Molecular Biology]": "orange",
+            "[Disease Mechanisms & Therapeutic Targets]": "gray",
+            "[Analytical Methods & Techniques]": "plum",
+            "[Systems Biology & Computational Methods]": "tomato",
+            "[Molecular Evolution & Comparative Biochemistry]": "turquoise",
+            "[Bioenergetics & Membrane Biochemistry]": "limegreen",
+            "[Chemical Biology & Synthetic Biology]": "magenta",
         }
         colors = [category_map[cat] for cat in df["category"]]
         fig = go.Figure()
