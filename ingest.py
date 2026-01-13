@@ -35,7 +35,7 @@ shared_sentence_transformer = SentenceTransformer(
 )
 shared_hf_embeddings = HuggingFaceEmbeddings(model_name="allenai-specter")
 rew = RagEmbeddingsWorkflow(
-    pool=pool,
+    db_pool=pool,
     sentence_transformer=shared_sentence_transformer,
     hf_embeddings=shared_hf_embeddings,
 )

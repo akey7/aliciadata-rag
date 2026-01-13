@@ -13,7 +13,7 @@ from .path_mixin import PathMixin
 class RagEmbeddingsWorkflow(WorkerMixin, PathMixin):
     def __init__(
         self,
-        pool,
+        db_pool,
         sentence_transformer=None,
         hf_embeddings=None,
         suggested_chunk_size_characters=3000,
@@ -25,7 +25,7 @@ class RagEmbeddingsWorkflow(WorkerMixin, PathMixin):
 
         Parameters
         ----------
-        pool
+        db_pool
             PostgreSQL connection pool.
 
         sentence_trasnsformer : SentenceTransformer, optional
@@ -51,7 +51,7 @@ class RagEmbeddingsWorkflow(WorkerMixin, PathMixin):
         self.suggested_chunk_size_characters = suggested_chunk_size_characters
         self.overlap_size_characters = overlap_size_characters
         self.min_chunk_size_characters = min_chunk_size_characters
-        self.pool = pool
+        self.db_pool = db_pool
         self.sentence_transformer = (
             sentence_transformer
             if sentence_transformer
