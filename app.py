@@ -149,7 +149,7 @@ class RagChat(AgentMixin, WorkerMixin):
             "[Bioenergetics & Membrane Biochemistry]": "limegreen",
             "[Chemical Biology & Synthetic Biology]": "magenta",
         }
-        colors = [category_map[cat] for cat in df["category"]]
+        colors = [category_map.get(cat, "firebrick") for cat in df["category"]]
         fig = go.Figure()
         fig.add_trace(
             go.Scatter(
