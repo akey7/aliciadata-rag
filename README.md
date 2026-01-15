@@ -20,6 +20,7 @@ A RAG chat based on complex domain data from biology research.
 ```
 .
 ├── app.py                                            # Gradio frontend
+├── .env.example                                      # .env template
 ├── docs                                              # Supplemental documentation
 │   ├── ARCHITECTURE.md                               # Architecture overview
 │   ├── DEPLOYMENT.md                                 # Dev/prod deployment
