@@ -1,13 +1,7 @@
 # aliciadata-rag
 A RAG chat based on complex domain data from biology research.
 
-## Starting Chroma
-
-```
-ANONYMIZED_TELEMETRY=False uv run chroma run --path [KNOWLEDGE_AGENT_DATA_FOLDER]/vectorstore
-```
-
-## Architecture
+## Architecture Highlights
 
 ### Tech Stack
 
@@ -28,6 +22,7 @@ ANONYMIZED_TELEMETRY=False uv run chroma run --path [KNOWLEDGE_AGENT_DATA_FOLDER
 ├── app.py                                            # Gradio frontend
 ├── docs                                              # Supplemental documentation
 │   ├── ARCHITECTURE.md                               # Architecture overview
+│   ├── DEPLOYMENT.md                                 # Dev/prod deployment
 │   ├── EVALUATION.md                                 # Future plan for evals
 │   └── ROADMAP.md                                    # Roadmap of future features
 ├── ingest.py                                         # Paper ingestion pipeline
@@ -56,3 +51,7 @@ ANONYMIZED_TELEMETRY=False uv run chroma run --path [KNOWLEDGE_AGENT_DATA_FOLDER
 
 ### More Details
 More details about the architecture, including data flows during ingestion and chat, is in the [architecture document](docs/ARCHITECTURE.md).
+
+## Deployment Highlights
+
+More details about architecture, including dev and prod setup, is in the [deployment document](docs/DEPLOYMENT.md)
