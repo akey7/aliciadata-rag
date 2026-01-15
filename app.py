@@ -48,7 +48,7 @@ class RagChat(AgentMixin, WorkerMixin):
             hf_embeddings=hf_embeddings,
         )
         logging.basicConfig(level=logging.INFO)
-        self.model = "gpt-5-mini"
+        self.model = "gpt-5-nano"
         self.citations = []
 
     def generate_status(self):

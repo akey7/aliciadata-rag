@@ -67,7 +67,7 @@ class AgentMixin:
         self,
         messages,
         notifier=None,
-        model="gpt-5-mini",
+        model="gpt-5-nano",
         pause_between_prompts=60,
         max_retries=5,
         base_delay=2,
