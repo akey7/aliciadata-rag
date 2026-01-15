@@ -1,5 +1,9 @@
-# aliciadata-rag
-A RAG chat based on complex domain data from biology research.
+# BiologyRAG: PhD-Level Biology Research Q&A System
+**Semantic search + LLM generation over 233 biology research papers from my PhD work**
+
+🔗 [Live Demo](https://rag.aliciadata.com)
+
+A production-oriented Retrieval-Augmented Generation (RAG) system designed to answer complex biology questions over a large, technical document corpus.
 
 ## Architecture Highlights
 
