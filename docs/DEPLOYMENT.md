@@ -47,7 +47,7 @@ migrations
 uv sync
 ```
 
-#### Starting Chroma
+### Starting Chroma
 
 - **Start Chroma for ingestion**: Substitute `[KNOWLEDGE_AGENT_DATA_FOLDER]` for the root of the folders you created above.
 
