@@ -5,7 +5,26 @@
 
 A production-oriented Retrieval-Augmented Generation (RAG) system designed to answer complex biology questions over a large, technical document corpus.
 
+### Built to Demonstrate
+- Domain-specific RAG implementation with scientific embeddings
+- Deployed Python architecture with proper data persistence  
+- End-to-end deployment from ingestion to live UI
+
+### What's Working Well
+✅ 233 papers successfully ingested and searchable  
+✅ Multi-turn conversations with context retention  
+✅ Consistent uptime on DigitalOcean
+✅ Clean Gradio interface 
+✅ Conversation history persistence in PostgreSQL 
+
 ## Architecture Highlights
+
+### Design Decisions
+
+- **Why SPECTER?** Pretrained on 700K+ scientific papers; semantic understanding of biology terminology
+- **Why Markdown over PDF?** Cleaner structure, no table/figure extraction challenges, preserves formatting
+- **Why single VPS?** Cost-effective for demo; all components colocated for minimal latency
+- **Why no Docker?** Simplicity for initial deployment; containerization is planned enhancement
 
 ### Tech Stack
 
@@ -17,7 +36,7 @@ A production-oriented Retrieval-Augmented Generation (RAG) system designed to an
 | **Orchestration** | LangChain | Standard RAG abstractions |
 | **Conversation DB** | PostgreSQL | Tracks paper and chunk metadata, prompts |
 | **Interface** | Gradio | Rapid prototyping, built-in chat UI |
-| **Deployment** | DigitalOcean VPS | Single droplet ($24/month) |
+| **Deployment** | DigitalOcean VPS | Predcitable monthly cost |
 
 ### Repository Structure
 
@@ -60,3 +79,7 @@ More details about the architecture, including data flows during ingestion and c
 ## Deployment Highlights
 
 More details about architecture, including dev and prod setup, is in the [deployment document](docs/DEPLOYMENT.md)
+
+## Current Limitations
+
+Current limitations include **lack of formal evals, context window management, concurrent user testing, containerization, and a smoother document update experience.** More details about a specific improvement roadmap is in the [roadmap document](docs/ROADMAP.md) and [evaluation document](docs/EVALUATION.md).
