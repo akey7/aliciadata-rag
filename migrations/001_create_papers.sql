@@ -1,3 +1,5 @@
+-- Tracks paper UUIDs and metadata
+
 CREATE TABLE IF NOT EXISTS papers (
     id SERIAL PRIMARY KEY,
     sha256 VARCHAR(70),

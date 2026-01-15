@@ -1,3 +1,5 @@
+-- Counts the times each chunk is retrieved.
+
 CREATE OR REPLACE VIEW chunk_citations AS
 (
     WITH paper_chunk_citation_counts AS (
