@@ -1,3 +1,8 @@
+"""
+Runs ingestion, categorization, and categorization pipeline for
+RAG context retrievals.
+"""
+
 import os
 
 os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "1"
@@ -12,6 +17,7 @@ from src.import_worker import ImportWorker
 from src.category_workflow import CategoryWorkflow
 from src.rag_embeddings_workflow import RagEmbeddingsWorkflow
 
+# Setup PostgreSQL pool and get environment
 logging.basicConfig(level=logging.INFO)
 load_dotenv()
 pool = psycopg2.pool.SimpleConnectionPool(
@@ -23,10 +29,16 @@ pool = psycopg2.pool.SimpleConnectionPool(
     port="5432",
     database=os.getenv("DB_NAME"),
 )
+
+# Import any NEW papers
 iw = ImportWorker(pool)
 iw.run()
+
+# Categorize and NEW papers
 cw = CategoryWorkflow(pool=pool, pause_between_prompts=10)
 cw.run()
+
+# Chunk all papers and revuild embeddings.
 hf_token = os.getenv("HF_TOKEN")
 login(hf_token, add_to_git_credential=True)
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
@@ -41,4 +53,6 @@ rew = RagEmbeddingsWorkflow(
 )
 rew.erase_embeddings()
 rew.run()
+
+# Report finish
 logging.info("ingest.py: Done!")
