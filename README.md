@@ -11,11 +11,11 @@ A production-oriented Retrieval-Augmented Generation (RAG) system designed to an
 - End-to-end deployment from ingestion to live UI
 
 ### What's Working Well
-- ✅ 233 papers successfully ingested and searchable  
-- ✅ Multi-turn conversations with context retention  
-- ✅ Consistent uptime on DigitalOcean
-- ✅ Clean Gradio interface with chat and citations.
-- ✅ Conversation history persistence in PostgreSQL 
+- 233 papers successfully ingested and searchable  
+- Multi-turn conversations with context retention  
+- Consistent uptime on DigitalOcean
+- Clean Gradio interface with chat and citations.
+- Conversation history persistence in PostgreSQL 
 
 ## Architecture Highlights
 
