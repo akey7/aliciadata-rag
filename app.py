@@ -98,6 +98,11 @@ class RagChat(AgentMixin, WorkerMixin):
         """
         Send the chat history (including chunks of context) along with the
         system prompt to OpenAI API.
+
+        Parameters
+        ----------
+        history: List[Dict[str, str]
+            The chat history to include with the system prompt.
         """
         system_content = self.prepare_prompt_from_file("openai_rag_system_prompt")
         messages = [{"role": "system", "content": system_content}]
@@ -108,6 +113,11 @@ class RagChat(AgentMixin, WorkerMixin):
     def log_message(self, message):
         """
         Log the initial prompt of a RAG chat into PostgreSQL.
+
+        Parameters
+        ----------
+        message: str
+            The user message that is the first prompt.
         """
         with self.get_connection() as conn:
             with conn.cursor() as cur:
