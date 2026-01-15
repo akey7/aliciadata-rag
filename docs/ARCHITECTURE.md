@@ -1,6 +1,8 @@
 # Architecture
 
-## Data Flow: One-Time Ingestion
+## Data Flows
+
+### One-Time Ingestion
 ```
 Research Papers (Markdown via Obsidian Web Clipper)
          ↓
@@ -11,7 +13,7 @@ SPECTER Embeddings (768 dimensions)
 ChromaDB + PostgreSQL Persistent Storage 
 ```
 
-## Runtime Query Flow
+### Chat at Runtime
 ```
 User Query
     ↓
