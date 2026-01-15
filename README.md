@@ -78,7 +78,7 @@ More details about the architecture, including data flows during ingestion and c
 
 ## Deployment Highlights
 
-More details about architecture, including dev and prod setup, is in the [deployment document](docs/DEPLOYMENT.md)
+More details about deployment, including dev and prod setup, is in the [deployment document](docs/DEPLOYMENT.md)
 
 ## Current Limitations
 
