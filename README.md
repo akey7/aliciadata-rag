@@ -11,11 +11,11 @@ A production-oriented Retrieval-Augmented Generation (RAG) system designed to an
 - End-to-end deployment from ingestion to live UI
 
 ### What's Working Well
-✅ 233 papers successfully ingested and searchable  
-✅ Multi-turn conversations with context retention  
-✅ Consistent uptime on DigitalOcean
-✅ Clean Gradio interface 
-✅ Conversation history persistence in PostgreSQL 
+- ✅ 233 papers successfully ingested and searchable  
+- ✅ Multi-turn conversations with context retention  
+- ✅ Consistent uptime on DigitalOcean
+- ✅ Clean Gradio interface with chat and citations.
+- ✅ Conversation history persistence in PostgreSQL 
 
 ## Architecture Highlights
 
@@ -30,9 +30,9 @@ A production-oriented Retrieval-Augmented Generation (RAG) system designed to an
 
 | Component | Technology | Rationale |
 |-----------|-----------|-----------|
-| **Embeddings** | AllenAI SPECTER | Domain-specific for scientific papers (768-dim) |
+| **Embeddings** | AllenAI SPECTER | Domain-specific for scientific papers (768-dimension) |
 | **Vector Store** | ChromaDB | Persistent storage, lightweight, no external DB |
-| **LLM** | OpenAI GPT-5 nano | Cost-efficient ($0.05/1M in, $0.40/1M out) |
+| **LLM** | OpenAI GPT-5 nano | Cost-efficient |
 | **Orchestration** | LangChain | Standard RAG abstractions |
 | **Conversation DB** | PostgreSQL | Tracks paper and chunk metadata, prompts |
 | **Interface** | Gradio | Rapid prototyping, built-in chat UI |
