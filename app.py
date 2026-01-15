@@ -285,6 +285,8 @@ class RagChat(AgentMixin, WorkerMixin):
                     with gr.Row():
                         with gr.Column():
                             msg = gr.Textbox(label="Prompt (press enter to send)")
+                            gr.Markdown("**Privacy Note:** Conversations are logged and reviewed to improve the AI. Please avoid sharing sensitive data.")
+                            gr.Markdown("**Notes:** The chat context is large, complex, and technical--the answer might take up to 90 seconds. Also, this is not a general biology chatbot. If unsure, please try a suggested prompt from below.")
                         with gr.Column():
                             clear_button = gr.Button("Clear", variant="stop")
                     with gr.Row():
