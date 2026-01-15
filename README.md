@@ -7,7 +7,21 @@ A RAG chat based on complex domain data from biology research.
 ANONYMIZED_TELEMETRY=False uv run chroma run --path [KNOWLEDGE_AGENT_DATA_FOLDER]/vectorstore
 ```
 
-## Repository Structure
+## Architecture
+
+### Tech Stack
+
+| Component | Technology | Rationale |
+|-----------|-----------|-----------|
+| **Embeddings** | AllenAI SPECTER | Domain-specific for scientific papers (768-dim) |
+| **Vector Store** | ChromaDB | Persistent storage, lightweight, no external DB |
+| **LLM** | OpenAI GPT-5 nano | Cost-efficient ($0.05/1M in, $0.40/1M out) |
+| **Orchestration** | LangChain | Standard RAG abstractions |
+| **Conversation DB** | PostgreSQL | Tracks paper and chunk metadata, prompts |
+| **Interface** | Gradio | Rapid prototyping, built-in chat UI |
+| **Deployment** | DigitalOcean VPS | Single droplet ($24/month) |
+
+### Repository Structure
 
 ```
 .
@@ -39,3 +53,6 @@ ANONYMIZED_TELEMETRY=False uv run chroma run --path [KNOWLEDGE_AGENT_DATA_FOLDER
 │   └── worker_mixin.py                               # Mostly handles PostgreSQL connectivity
 └── uv.lock                                           # Exact dependency versions.
 ```
+
+### More Details
+More details about the architecture, including data flows during ingestion and chat, is in the [architecture document](docs/ARCHITECTURE.md).
