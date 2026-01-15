@@ -1,3 +1,8 @@
+"""
+Enables storage and retrieval of chunks and embeddings for RAG.
+"""
+
+
 import logging
 import os
 import chromadb

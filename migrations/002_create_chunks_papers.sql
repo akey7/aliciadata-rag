@@ -1,3 +1,5 @@
+-- Connects chunks to the papers they came from.
+
 CREATE TABLE IF NOT EXISTS chunks_papers (
    id SERIAL PRIMARY KEY,
    chunk TEXT,

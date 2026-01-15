@@ -1,13 +1,13 @@
+"""
+Provides PostgreSQL connectivity to other modules.
+"""
+
+
 import os
 from contextlib import contextmanager
 
 
 class WorkerMixin:
-    """
-    WorkerMixin provides common functionality for the workflows within
-    knowledge-agent.
-    """
-
     @contextmanager
     def get_connection(self):
         """

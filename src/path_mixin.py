@@ -1,15 +1,16 @@
+"""
+PathMixin provides the paths to the many folders and files of the
+knowledge-agent system. Each method computes the requisite location,
+checks if it exists, and returns it if it does exist.
+"""
+
+
 import os
 import re
 from datetime import datetime
 
 
 class PathMixin:
-    """
-    PathMixin provides the paths to the many folders and files of the
-    knowledge-agent system. Each method computes the requisite location,
-    checks if it exists, and returns it if it does exist.
-    """
-
     @property
     def knowledge_agent_data_folder(self):
         knowledge_agent_data_dir = os.getenv("KNOWLEDGE_AGENT_DATA_FOLDER")

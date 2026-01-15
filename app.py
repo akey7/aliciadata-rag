@@ -1,3 +1,8 @@
+"""
+Runs the Gradio app that is the user interface.
+"""
+
+
 import os
 
 os.environ["TOKENIZERS_PARALLELISM"] = "true"
@@ -19,6 +24,10 @@ from src.worker_mixin import WorkerMixin
 
 class RagChat(AgentMixin, WorkerMixin):
     def __init__(self):
+        """
+        Setup PostgreSQL pool, HuggingFace transformer, setup logging, 
+        and intialize instance variables.
+        """
         load_dotenv()
         self.db_pool = psycopg2.pool.SimpleConnectionPool(
             minconn=1,
@@ -87,6 +96,15 @@ class RagChat(AgentMixin, WorkerMixin):
         return context_messages
 
     def prepare_and_send_history(self, history):
+        """
+        Send the chat history (including chunks of context) along with the
+        system prompt to OpenAI API.
+
+        Parameters
+        ----------
+        history: List[Dict[str, str]
+            The chat history to include with the system prompt.
+        """
         system_content = self.prepare_prompt_from_file("openai_rag_system_prompt")
         messages = [{"role": "system", "content": system_content}]
         messages.extend(history)
@@ -94,6 +112,14 @@ class RagChat(AgentMixin, WorkerMixin):
         return {"role": "assistant", "content": reply}
 
     def log_message(self, message):
+        """
+        Log the initial prompt of a RAG chat into PostgreSQL.
+
+        Parameters
+        ----------
+        message: str
+            The user message that is the first prompt.
+        """
         with self.get_connection() as conn:
             with conn.cursor() as cur:
                 sql = "INSERT INTO rag_prompts (prompt) VALUES (%s)"
@@ -244,8 +270,11 @@ class RagChat(AgentMixin, WorkerMixin):
         return f'## From "{paper_title}"{os.linesep}{os.linesep}{chunk}{os.linesep}{os.linesep}--- End of chunk ---'
 
     def gradio_app(self):
-        with gr.Blocks(title="AliciaData RAG") as demo:
-            gr.Markdown("# AliciaData RAG")
+        """
+        Setup Gradio and handle events from the UI 
+        """
+        with gr.Blocks(title="BioRAG") as demo:
+            gr.Markdown("# BioRAG")
             with gr.Tabs():
                 with gr.TabItem("Chat"):
                     with gr.Row():

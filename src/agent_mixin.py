@@ -1,3 +1,9 @@
+"""
+AgentMixin provides common functionality to all agents that use
+OpenAI, Anthropic API calls.
+"""
+
+
 import os
 import logging
 import time
@@ -9,11 +15,6 @@ import chevron
 
 
 class AgentMixin:
-    """
-    AgentMixin provides common functionality to all agents that use
-    OpenAI, Anthropic API calls.
-    """
-
     def crash_report_filename(self):
         """
         Generate a date/time-stamped crash report filename.

@@ -1,3 +1,9 @@
+"""
+Handles the categorization workflow which generates categories
+for papers based on their titles with Anthropic API calls.
+"""
+
+
 import logging
 from .agent_mixin import AgentMixin
 from .worker_mixin import WorkerMixin
