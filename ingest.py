@@ -3,6 +3,7 @@ Runs ingestion, categorization, and categorization pipeline for
 RAG context retrievals.
 """
 
+
 import os
 
 os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "1"
